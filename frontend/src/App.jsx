@@ -12,6 +12,7 @@ import fairpricelogo from './assets/fairpricelogo.png'
 import ViewListIcon from '@mui/icons-material/ViewList';
 import Categories from './Categories';
 import ItemPage from './ItemPage';
+import Map from './Map';
 
 
 const listLoadingSkeleton = []
@@ -140,7 +141,7 @@ const App = () => {
                     <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Are you looking for these products?</h3>
 
                   ) : (
-                    <h3 style={{ marginBottom: "1vh", marginTop: 0}}>Recommended Products For You</h3>
+                    <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Recommended Products For You</h3>
                   )}
                   <Grid container spacing={2} style={{ width: "100%" }}>
                     {items.length === 0 ? (
@@ -181,10 +182,13 @@ const App = () => {
           </Fragment>
         )}
         {page === "category" && (
-          <Categories viewItem={viewItem}/>
+          <Categories viewItem={viewItem} />
         )}
         {page === "itemPage" && (
           <ItemPage itemDetails={itemDetails} />
+        )}
+        {page === "map" && (
+          <Map />
         )}
       </div>
 
