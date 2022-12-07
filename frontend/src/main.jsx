@@ -8,6 +8,9 @@ import "@fontsource/inter";
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: '#00B4DB'
+    }
   },
 });
 

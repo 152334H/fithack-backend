@@ -3,9 +3,48 @@ body {
 }
 
 .overallBackground {
-  background: #000000;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to bottom, #434343, #000000);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to bottom, #434343, #000000); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  
+  background: radial-gradient(circle at 50% 20%, rgb(35, 35, 35) 0%, rgb(0, 0, 0) 99.4%);
+  ;
+}
 
+.roundedTextField>div {
+  border-radius: 10px !important;
+  font-size: 1.2em;
+}
+::placeholder {
+  color: rgba(255, 255, 255, 0.9) !important;
+  opacity: 1 !important;
+}
+
+.searchBGStyle {
+  background: #00B4DB !important;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0083B0, #00B4DB) !important;
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #0083B0, #00B4DB) !important;
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
+.listing-info-style {
+  padding: 1ch;
+}
+.listing-title-style {
+  display: block;
+  font-weight: 550;
+}
+.listing-price-style {
+  display: block;
+  color: #00B4DB;
+  margin-top: 1ch;
+  margin-bottom: 1ch;
+  font-weight: 600;
+}
+.listing-quantity-style {
+  display: block;
+  margin: 0;
+}
+.itemPageInfoStyle {
+  display: block;
+  margin-top: 1ch;
 }
