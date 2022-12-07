@@ -76,8 +76,8 @@ const App = () => {
     setTimeout(() => { setSearchLoading(false); }, 1000)
   }
 
-  const viewItem = (index) => {
-    setItemDetails(items[index])
+  const viewItem = (itemInfo) => {
+    setItemDetails(itemInfo)
     setPage("itemPage")
   }
 
@@ -130,59 +130,58 @@ const App = () => {
             </Fade>
 
             <Fade in={true} style={{ transitionDelay: '240ms' }} >
-              <div style={{ display: "flex", justifyContent: "center", marginTop: "2vh" }}>
-                <Grid container spacing={2} style={{ width: "100%" }}>
-                  {searchLoading ? (
-                    <Fragment>
-                      {listLoadingSkeleton}
-                    </Fragment>
+              <div style={{ display: "flex", justifyContent: "center", marginTop: "2vh", flexDirection: "column" }}>
+                {searchLoading ? (
+                  <Fragment>
+                    {listLoadingSkeleton}
+                  </Fragment>
+                ) : (<Fragment>
+                  {isProductSearch ? (
+                    <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Are you looking for these products?</h3>
+
                   ) : (
-                    <Fragment>
-                      {items.length === 0 ? (
-                        <Grid item columns={12} style={{ width: "100%" }}>
-                          <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
-                            <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                            <h3>No Products Were Found</h3>
-                            <span>Perhaps try typing a different search query?</span>
-                          </Paper>
-                        </Grid>
-                      ) : (
-                        <Fragment>
-
-                          {isProductSearch ? (
-                            <h3 style={{ marginBottom: 0, marginTop: "3vh" }}>Are you looking for these products?</h3>
-
-                          ) : (
-                            <h3 style={{ marginBottom: 0, marginTop: "3vh" }}>Recommended Products For You</h3>
-                          )}
-                          {items.map((item, index) => (
-                            <Grid item xs={6} sm={6} md={4} lg={3} key={item.name}>
-                              <Paper className='listing-styles' elevation={6} onClick={() => {
-                                viewItem(index)
-                              }}>
-                                <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
-                                <div className='listing-info-style'>
-                                  <span className='listing-title-style'>{item.name}</span>
-                                  <span className='listing-price-style'>${item.price}</span>
-                                  <span className='listing-quantity-style'>Amount: <b>{item.amount}</b></span>
-
-                                </div>
-                              </Paper>
-                            </Grid>
-
-                          ))}
-                        </Fragment>
-                      )}
-
-                    </Fragment>
+                    <h3 style={{ marginBottom: "1vh", marginTop: 0}}>Recommended Products For You</h3>
                   )}
-                </Grid>
+                  <Grid container spacing={2} style={{ width: "100%" }}>
+                    {items.length === 0 ? (
+                      <Grid item columns={12} style={{ width: "100%" }}>
+                        <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                          <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                          <h3>No Products Were Found</h3>
+                          <span>Perhaps try typing a different search query?</span>
+                        </Paper>
+                      </Grid>
+                    ) : (
+                      <Fragment>
+
+                        {items.map((item, index) => (
+                          <Grid item xs={6} sm={6} md={4} lg={3} key={item.name}>
+                            <Paper className='listing-styles' elevation={6} onClick={() => {
+                              viewItem(items[index])
+                            }}>
+                              <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+                              <div className='listing-info-style'>
+                                <span className='listing-title-style'>{item.name}</span>
+                                <span className='listing-price-style'>${item.price}</span>
+                                <span className='listing-quantity-style'>Amount: <b>{item.amount}</b></span>
+
+                              </div>
+                            </Paper>
+                          </Grid>
+
+                        ))}
+                      </Fragment>
+                    )}
+
+                  </Grid>
+                </Fragment>
+                )}
               </div>
             </Fade>
           </Fragment>
         )}
         {page === "category" && (
-          <Categories />
+          <Categories viewItem={viewItem}/>
         )}
         {page === "itemPage" && (
           <ItemPage itemDetails={itemDetails} />

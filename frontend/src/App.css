@@ -26,6 +26,10 @@ body {
 
 }
 
+.rounded-icon-button {
+  border: 1px solid #cccccc !important;
+  border-radius: 7px !important;
+}
 .listing-info-style {
   padding: 1ch;
 }
@@ -47,4 +51,15 @@ body {
 .itemPageInfoStyle {
   display: block;
   margin-top: 1ch;
+}
+.listing-category-style {
+  font-weight: 600;
+  text-transform: capitalize;
+  font-size: 1.2em;
+}
+.listing-info-category-style {
+  padding-top: 2ch;
+  padding-bottom: 2ch;
+  padding-left: 1ch;
+  padding-right: 1ch;
 }
