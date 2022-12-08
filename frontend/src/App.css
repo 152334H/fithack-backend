@@ -37,6 +37,9 @@ body {
   display: block;
   font-weight: 550;
 }
+.mapListStyle {
+  margin-bottom: 2vh;
+}
 .listing-price-style {
   display: block;
   color: #00B4DB;

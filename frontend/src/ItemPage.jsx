@@ -16,7 +16,7 @@ const ItemPage = (props) => {
                 <span className="itemPageInfoStyle"><b>Location:</b> {props.itemDetails.location}</span>
                 <span className="itemPageInfoStyle"><b>Amount in Stock:</b> {props.itemDetails.amount}</span>
 
-                <Button startIcon={<SearchIcon />} style={{ marginTop: "3vh" }} variant="contained">Find Item in Store</Button>
+                <Button onClick={() => {}} startIcon={<SearchIcon />} style={{ marginTop: "3vh" }} variant="contained">Find Item in Store</Button>
             </div>
         </Fade>
     )

@@ -14,6 +14,7 @@ import Categories from './Categories';
 import ItemPage from './ItemPage';
 import Map from './Map';
 
+window.address = "http://irscybersec.ml:5170"
 
 const listLoadingSkeleton = []
 for (let i = 0; i < 6; i++) {
@@ -77,20 +78,15 @@ const App = () => {
   }, [])
 
   const getItems = () => {
-    fetch(ipAdress + '/search', {
-      method: 'POST',
+    fetch(window.address + "/listing/unsorted", {
+      method: 'GET',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        "CarParkID": carparkID
-      })
     }).then((results) => {
       return results.json(); //return data in JSON (since its JSON data)
     }).then((data) => {
-
-    
+      console.log(data)
     }).catch((error) => {
       console.log(error)
-      message.error("Oops, error refreshing carpark availability")
     })
   }
 
