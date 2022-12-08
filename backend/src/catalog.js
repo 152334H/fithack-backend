@@ -2,7 +2,8 @@ import {readFileSync} from 'fs'
 import express from 'express'
 import {compareTwoStrings} from 'string-similarity'
 
-const ITEMS = JSON.parse(readFileSync('./data.parsed.json'))
+const ITEMS = JSON.parse(readFileSync('./data.parsed.json')).map(d => ({...d, location_name:'tkai'}))
+
 /*
   {
     "name": "apple",
@@ -28,29 +29,17 @@ catalogRouter.get('/unsorted', (_,res) => {
 catalogRouter.get('/categorised', (_,res) => {
     res.status(200).send(CATEGORIES)
 })
-catalogRouter.post('/most_common', (req,res) => {
-    const query = req.body.query;
-    const limit = req.body.limit ?? 10;
-    if (typeof query !== 'string') 
-        return res.status(400).send({
-            error: 'query was missing'
-        })
-    if (typeof limit !== 'number')
-        return res.status(400).send({
-            error: 'limit was not a number'
-        })
-    
+
+export const mostCommon = (query, limit) => {
     const ls = ITEMS.map(d => {
         const dist = compareTwoStrings(d.name, query)
-        return [dist, d.id]
+        return [dist, d]
     }).sort((a,b) => b[0]-a[0])
 
-    return res.status(200).send({
-        items: ls.slice(0,limit).map(ls => ({
-            similarity: ls[0],
-            id: ls[1]
-        }))
-    })
-})
+    return ls.slice(0,limit).map(ls => ({
+        similarity: ls[0],
+        item: ls[1]
+    }))
+}
 
 export default catalogRouter
