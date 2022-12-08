@@ -1,47 +1,22 @@
+import {readFileSync} from 'fs'
+import express from 'express'
 
-items = [
-    "ABC Milk",
-    "Appy-tood Creamer",
-    "Doug's Yougurt",
-    "Haybale's Tomato Sauce",
-    "AEKI Lubricants",
-    "'Smart-Eyes' Chocolate Milk",
-    "J&B Coconut Oil",
-    "Mac & Cheese Powder",
-    "'Tastes So Good' Chocolate Bar",
-    "Hainan Fuiji Apples",
-    "Texas Potatoes",
-    "'No-Obligation' Chocolate Chip Cookies",
-    "Namaste Juice",
-    "'Serendipity' Protein Bars",
-    "Aroma Power Cream",
-    "Boneless Beef",
-    "Flash-Free Batter",
-    "Fructo-Alcohol",
-    "Lenny's Noodles",
-    "'Squeeze-It' Condoms",
-    "Borneo Apples",
-    "Nipsy-Lips Lipstick",
-    "Chomp Chips",
-    "Groovy Strawberry Jam",
-    "Eternity Bean Paste",
-    "'Sticky Sticky' Cookies",
-    "Chippies",
-    "Polar Soda",
-    "'The Real Thing' Ice Cream",
-    "Russian Vermicelli",
-    "Sam's Chicken Wings",
-    "MIDAN Brand table salt",
-    "Real Butter",
-    "Freshly-Ground Coffee",
-    "New England Clam Chowder",
-    "Sweet-And-Spicy Pretzels",
-    "Shake Shack Grilled Chicken Sandwich",
-    "Cherry Lubricant",
-    "Mama's Chocolate Ice Cream",
-    "Fam&Harry's Ice Cream",
-    "Shake Shack Buttermilk Pancakes",
-    "Thai Honey Mangoes",
-    "South African Bananas",
-    "Ander Peaches",
-]
+const ITEMS = JSON.parse(readFileSync('./data.parsed.json'))
+
+const CATEGORIES = {}
+ITEMS.forEach(d => {
+    const ls = CATEGORIES[d.category] ?? [];
+    ls.push(d)
+    CATEGORIES[d.category] = ls
+})
+
+const catalogRouter = express.Router();
+
+catalogRouter.get('/unsorted', (_,res) => {
+    res.status(200).send(ITEMS)
+})
+catalogRouter.get('/categorised', (_,res) => {
+    res.status(200).send(CATEGORIES)
+})
+
+export default catalogRouter

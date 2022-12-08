@@ -1,9 +1,12 @@
 import express from 'express'
 import predict from './gpt.js'
+import catalogRouter from './catalog.js'
+import cors from 'cors'
 
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 app.use((req, _, nxt) => {
 	console.log(new Date().toUTCString())
 	console.log(req.method)
@@ -12,6 +15,7 @@ app.use((req, _, nxt) => {
 	console.log('---')
 	nxt()
 })
+
 
 app.post('/_test', async (req, res) => {
     const query = req.body.query
@@ -36,6 +40,9 @@ app.post('/_test', async (req, res) => {
         })
     }
 })
+
+app.use('/listing', catalogRouter)
+
 app.get('/', (_, res) => {
   res.send('Hello World')
 })
