@@ -4,14 +4,18 @@
     "id": "ffa137",
     "category": "produce",
     "price": 0.72,
-    "image": "ffa137.jpeg"
+    "image": "ffa137.jpeg",
+	"location": [70,70],
+	"location_name": "Produce Shelf"
   },
   {
     "name": "bannana",
     "id": "ffb138",
     "category": "produce",
     "price": 0.22,
-    "image": "ffb138.jpeg"
+    "image": "ffb138.jpeg",
+	"location": [70,70],
+	"location_name": "Produce Shelf"
   },
   {
     "name": "grape",
@@ -81,28 +85,36 @@
     "id": "fcc148",
     "category": "canned",
     "price": 1.18,
-    "image": "fcc148.jpeg"
+    "image": "fcc148.jpeg",
+	"location": [70,170],
+	"location_name": "Canned Shelf"
   },
   {
     "name": "Del Monte Green Beans",
     "id": "fcb149",
     "category": "canned",
     "price": 1.18,
-    "image": "fcb149.png"
+    "image": "fcb149.png",
+	"location": [70,170],
+	"location_name": "Canned Shelf"
   },
   {
     "name": "Del Monte Sliced Peaches in 100% Juice",
     "id": "fcp150",
     "category": "canned",
     "price": 1.76,
-    "image": "fcp150.jpeg"
+    "image": "fcp150.jpeg",
+	"location": [70,170],
+	"location_name": "Canned Shelf"
   },
   {
     "name": "Bush's Black Beans",
     "id": "fcb151",
     "category": "canned",
     "price": 1,
-    "image": "fcb151.jpeg"
+    "image": "fcb151.jpeg",
+	"location": [70,170],
+	"location_name": "Canned Shelf"
   },
   {
     "name": "Hunt's Tomato Sauce",
@@ -144,7 +156,9 @@
     "id": "fdf160",
     "category": "dry-goods",
     "price": 4.66,
-    "image": "fdf160.png"
+    "image": "fdf160.png",
+	"location": [70,250],
+	"location_name": "Dry Goods Shelf"
   },
   {
     "name": "C&H Premium Pure Cane Sugar",
@@ -172,91 +186,118 @@
     "id": "fde164",
     "category": "dairy",
     "price": 2.67,
-    "image": "fde164.jpeg"
+    "image": "fde164.jpeg",
+	"location": [84,215],
+	"location_name": "Dairy Shelf"
+	
   },
   {
     "name": "Sargento Creamy Sliced Cheddar Cheese, 10 Slices",
     "id": "fdc165",
     "category": "dairy",
     "price": 2.95,
-    "image": "fdc165.jpeg"
+    "image": "fdc165.jpeg",
+	"location": [84,215],
+	"location_name": "Dairy Shelf"
   },
   {
     "name": "Meadow Gold Whole Milk",
     "id": "fdm166",
     "category": "dairy",
     "price": 3.86,
-    "image": "fdm166.png"
+    "image": "fdm166.png",
+	"location": [84,215],
+	"location_name": "Dairy Shelf"
   },
   {
     "name": "TruMoo Chocolate Whole Milk",
     "id": "fdm167",
     "category": "dairy",
     "price": 2.88,
-    "image": "fdm167.jpeg"
+    "image": "fdm167.jpeg",
+	"location": [84,215],
+	"location_name": "Dairy Shelf"
   },
   {
     "name": "TruMoo 1% Low-Fat Strawberry Milk",
     "id": "fdm168",
     "category": "dairy",
     "price": 1.08,
-    "image": "fdm168.jpeg"
+    "image": "fdm168.jpeg",
+	"location": [84,215],
+	"location_name": "Dairy Shelf"
   },
   {
     "name": "Grandma Sycamore's Home-Maid White Bread",
     "id": "fbb169",
     "category": "bakery",
     "price": 2.78,
-    "image": "fbb169.jpeg"
+    "image": "fbb169.jpeg",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Sara Lee White Bread, 20 Slices",
     "id": "fbb170",
     "category": "bakery",
     "price": 1.98,
-    "image": "fbb170.jpeg"
+    "image": "fbb170.jpeg",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Great Grains Multigrain Flax Seed Premium Bread",
     "id": "fbb171",
     "category": "bakery",
     "price": 2.28,
-    "image": "fbb171.png"
+    "image": "fbb171.png",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Franz Buttermilk Bread",
     "id": "fbb172",
     "category": "bakery",
     "price": 2.48,
-    "image": "fbb172.jpeg"
+    "image": "fbb172.jpeg",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Franz Hoagie Rolls, 6 count",
     "id": "fbb173",
     "category": "bakery",
     "price": 3.08,
-    "image": "fbb173.png"
+    "image": "fbb173.png",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Franz Hawaiian Rolls, 12 count",
     "id": "fbr174",
     "category": "bakery",
     "price": 2.83,
-    "image": "fbr174.png"
+    "image": "fbr174.png",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Sara Lee Sweet Hawaiian Rolls, 12 count",
     "id": "fbr175",
     "category": "bakery",
     "price": 1.88,
-    "image": "fbr175.jpeg"
+    "image": "fbr175.jpeg",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Great Grains Gourmet Hoagie Cheddar Cheese Rolls, 6 count",
     "id": "fbr176",
     "category": "bakery",
     "price": 2.28,
-    "image": "fbr176.jpeg"
+    "image": "fbr176.jpeg",
+	"location": [82,70],
+	"location_name": "Bakery"
   },
   {
     "name": "Aquafina Purified Water, 32 count",

@@ -16,7 +16,7 @@ LIcon.Default.mergeOptions({
   iconUrl: iconUrl,
   shadowUrl: shadowUrl,
 });
-const bounds = [[0, 0], [900, 640]];
+const bounds = [[0, 0], [1280, 720]];
 
 const AddImageOverlay = () => {
   const map = useMap()
@@ -38,68 +38,54 @@ const ChangeMapZoomFocus = (props) => {
 
 }
 
-
+let fullCategoryData = {}
 const Map = (props) => {
   const theme = useTheme()
-  const [itemsList, setItemsList] = useState([])
   const [markersList, setItemMarkers] = useState([])
-  const [items, setItems] = useState([{
-    name: "HL MILK",
-    price: 1.50,
-    type: "Drink",
-    location: latLng([50, 100]),
-    amount: 5
-  },
-  {
-    name: "HL MILK 200ML",
-    price: 1.50,
-    type: "Drink",
-    location: latLng([50, 325]),
-    amount: 5
-  },
-  {
-    name: "HL MILK 300ML",
-    price: 1.50,
-    type: "Drink",
-    location: latLng([50, 525]),
-    amount: 5
-  }])
+  const [currentShelf, setCurrentShelf] = useState("")
+  const [items, setItems] = useState([])
+
+  const getListings = async () => {
+    await fetch(window.address + "/listing/categorised", {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).then((results) => {
+      return results.json(); //return data in JSON (since its JSON data)
+    }).then((data) => {
+      fullCategoryData = data
+      const markers = []
+      for (const category in data) {
+        if ("location" in data[category][0]) {
+          markers.push(
+            <Marker eventHandlers={{
+              click: () => {
+                setItems(fullCategoryData[category])
+                setCurrentShelf(category)
+              }
+            }} key={data[category][0].location_name} position={data[category][0].location}>
+              <Popup closeOnClick={false} closeButton={false} closeOnEscapeKey={false} maxWidth={250} minWidth={10} maxHeight={55}>
+                <b>{data[category][0].location_name} </b>
+              </Popup>
+            </Marker>
+          )
+        }
+
+      }
+
+      setItemMarkers(markers)
+      console.log(data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
 
   useEffect(() => {
-    const newList = []
-    const newMarkers = []
-    for (let i = 0; i < items.length; i++) {
-      newList.push(
-        <Paper onClick={() => {
-          props.setCenter(items[i].location)
-          props.setZoom(1)
-        }} key={items[i].name} className="mapListStyle">
-          <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
-          <div className='listing-info-style'>
-            <span className='listing-title-style'>{items[i].name}</span>
-            <span className='listing-price-style'>${items[i].price}</span>
-            <span className='listing-quantity-style'>Amount: <b>{items[i].amount}</b></span>
-
-          </div>
-        </Paper>
-      )
-      newMarkers.push(
-        <Marker key={items[i].name} position={items[i].location}>
-          <Popup closeOnClick={false} closeButton={false} closeOnEscapeKey={false} maxWidth={250} minWidth={10} maxHeight={55}>
-            <b>{items[i].name} </b>
-
-          </Popup>
-        </Marker>
-      )
-    }
-    setItemMarkers(newMarkers)
-    setItemsList(newList)
-
+    getListings()
   }, [])
   return (
     <Fragment>
       <div style={{ margin: "-2ch" }}>
-        <MapContainer bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
+        <MapContainer maxZoom={2} bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
           <ZoomControl position="bottomright"></ZoomControl>
           <AddImageOverlay />
           <ChangeMapZoomFocus center={props.center} zoom={props.zoom} />
@@ -107,8 +93,23 @@ const Map = (props) => {
         </MapContainer>
       </div>
       <h1 style={{ marginTop: "2ch" }}><span style={{ color: theme.palette.primary.main }}>Bukit Panjang</span> Outlet</h1>
+      <h3>Items at: {currentShelf ? currentShelf : "No Shelf Selected"}</h3>
       <div>
-        {itemsList}
+        {items.map((item) => {
+          return (
+            <Paper onClick={() => {
+              props.setCenter(items[i].location)
+              props.setZoom(1)
+            }} key={item.name} className="mapListStyle">
+              <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+              <div className='listing-info-style'>
+                <span className='listing-title-style'>{item.name}</span>
+                <span className='listing-price-style'>${item.price}</span>
+
+              </div>
+            </Paper>
+          )
+        })}
       </div>
     </Fragment>
 

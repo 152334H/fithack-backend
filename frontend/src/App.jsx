@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-import { CircularProgress, Paper, BottomNavigation, BottomNavigationAction, Avatar, Grow, Fade, TextField, InputAdornment, Collapse, Grid, Skeleton } from '@mui/material'
+import { CircularProgress, Button, Paper, BottomNavigation, BottomNavigationAction, Avatar, Grow, Fade, TextField, InputAdornment, Collapse, Grid, Skeleton } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home'
 import MapIcon from '@mui/icons-material/Map';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
@@ -24,8 +24,17 @@ for (let i = 0; i < 6; i++) {
     </Grid>)
 }
 
+// It appears that putting the debounced function INSIDE the functional component causes re-renders at every setState
+// and hence causes the debouncer to fail
+const debouncedUpdate = debounce((callAPIUpdate, value) => {
+  callAPIUpdate(value)
+}, 500)
+
+let fullOriginalItemList = []
+
 const App = () => {
   const theme = useTheme()
+  const [searchVal, setSearchVal] = useState("")
   const [page, setPage] = useState("home")
   const [center, setCenter] = useState({ //center of map
     lat: 100,
@@ -33,14 +42,16 @@ const App = () => {
   })
   const [zoom, setZoom] = useState(10)
   const [user, setUser] = useState("Kai Xiang")
+  const [isQnA, setisQnA] = useState(false)
   const [userLetters, setUserLetters] = useState("")
   const [searchFocused, setSearchFocused] = useState(false)
   const [searchLoading, setSearchLoading] = useState(true)
+  const [searchErrored, setSearchErrored] = useState(false)
   const [items, setItems] = useState([])
   const [itemDetails, setItemDetails] = useState({
     name: "HL MILK",
     price: 1.50,
-    type: "Drink",
+    category: "Drink",
     location: "Shelf E5",
     amount: 5
   })
@@ -63,15 +74,57 @@ const App = () => {
       return results.json(); //return data in JSON (since its JSON data)
     }).then((data) => {
       setItems(data)
+      fullOriginalItemList = data
     }).catch((error) => {
       console.log(error)
     })
     setSearchLoading(false)
   }
 
-  const callAPIUpdate = (value) => {
-    console.log(value)
-    // call search API here
+  const callAPIUpdate = async (value) => {
+    
+    if (value === "") {
+      setIsProductSearch(false)
+    }
+    else {
+
+      setIsProductSearch(true)
+      // call search API here
+
+      await fetch(window.address + "/gpt/classify", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: value
+        })
+      }).then((results) => {
+        return results.json(); //return data in JSON (since its JSON data)
+      }).then((data) => {
+        if ("error" in data) {
+          setSearchErrored(true)
+        }
+        else {
+          if (data.variant === "item") {
+            setisQnA(false)
+            const newItemList = []
+            for (let i = 0; i < data.relatedItems.length; i++) {
+              newItemList.push(data.relatedItems[i].item)
+            }
+            setItems(newItemList)
+          }
+          else if (data.variant === "help") {
+            setisQnA(true)
+          }
+        }
+
+      }).catch((error) => {
+        setSearchErrored(true)
+        console.log(error)
+      })
+
+    }
+    setSearchLoading(false)
+
   }
 
   const viewItem = (itemInfo) => {
@@ -79,7 +132,7 @@ const App = () => {
     setPage("itemPage")
   }
 
-  const debouncedUpdate = debounce((value) => { setSearchLoading(true); callAPIUpdate(value) }, 200)
+
 
   return (
     <div className='overallBackground' style={{ overflowX: "hidden", height: "100vh", width: "100vw" }}>
@@ -98,10 +151,14 @@ const App = () => {
             <Fade in={true} style={{ transitionDelay: '120ms' }}>
               <Paper className="searchBGStyle" elevation={12} style={{ marginTop: "3vh", borderRadius: "10px" }}>
                 <TextField
+                  value={searchVal}
                   onFocus={() => { setSearchFocused(true) }}
                   onBlur={() => { setSearchFocused(false) }}
                   onChange={(e) => {
-                    debouncedUpdate(e.target.value)
+                    debouncedUpdate(callAPIUpdate, e.target.value)
+                    setSearchVal(e.target.value)
+                    if (!searchLoading) setSearchLoading(true)
+                    setSearchErrored(false)
                   }}
                   InputProps={{
                     startAdornment: (
@@ -133,40 +190,76 @@ const App = () => {
                   <Fragment>
                     {listLoadingSkeleton}
                   </Fragment>
-                ) : (<Fragment>
-                  {isProductSearch ? (
-                    <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Are you looking for these products?</h3>
-
-                  ) : (
-                    <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Recommended Products For You</h3>
+                ) : (
+                <Fragment>
+                  {isProductSearch && (
+                    <Button style={{ alignSelf: "center", marginBottom: "2vh" }} variant="contained" onClick={() => {
+                      setSearchVal("")
+                      setIsProductSearch(false)
+                      setSearchErrored(false)
+                      setItems(fullOriginalItemList)
+                      setisQnA(false)
+                    }}>Clear Search</Button>
                   )}
-                  <Grid container spacing={2} style={{ width: "100%" }}>
-                    {items.length === 0 ? (
+
+                  {!searchErrored && !isQnA && (
+                    <Fragment>
+                      {isProductSearch ? (
+                        <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Are you looking for these products?</h3>
+                      ) : (
+                        <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Recommended Products For You</h3>
+                      )}
+                    </Fragment>
+                  )}
+
+                  <Grid rowSpacing={3} container spacing={2} alignItems="stretch">
+                    {searchErrored ? (
                       <Grid item columns={12} style={{ width: "100%" }}>
                         <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
                           <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                          <h3>No Products Were Found</h3>
+                          <h3>I did not understand that query</h3>
                           <span>Perhaps try typing a different search query?</span>
                         </Paper>
                       </Grid>
                     ) : (
                       <Fragment>
-
-                        {items.map((item, index) => (
-                          <Grid item xs={6} sm={6} md={4} lg={3} key={item.name}>
-                            <Paper className='listing-styles' elevation={6} onClick={() => {
-                              viewItem(items[index])
-                            }}>
-                              <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
-                              <div className='listing-info-style'>
-                                <span className='listing-title-style'>{item.name}</span>
-                                <span className='listing-price-style'>${item.price}</span>
-                                
-                              </div>
+                        {isQnA ? (
+                          <Grid item columns={12} style={{ width: "100%" }}>
+                            <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                              <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                              <h3>You asked: </h3>
+                              <span>response</span>
                             </Paper>
-                          </Grid>
+                          </Grid>) : (
+                          <Fragment>
+                            {items.length === 0 ? (
+                              <Grid item columns={12} style={{ width: "100%" }}>
+                                <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                                  <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                                  <h3>No Products Were Found</h3>
+                                  <span>Perhaps try typing a different search query?</span>
+                                </Paper>
+                              </Grid>
+                            ) : (
+                              <Fragment>
+                                {items.map((item, index) => (
+                                  <Grid item xs={6} sm={6} md={4} lg={3} key={item.name}>
+                                    <Paper className='listing-styles' elevation={6} onClick={() => {
+                                      viewItem(items[index])
+                                    }}>
+                                      <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+                                      <div className='listing-info-style'>
+                                        <span className='listing-title-style'>{item.name}</span>
+                                        <span className='listing-price-style'>${item.price}</span>
 
-                        ))}
+                                      </div>
+                                    </Paper>
+                                  </Grid>
+                                ))}
+                              </Fragment>
+                            )}
+                          </Fragment>
+                        )}
                       </Fragment>
                     )}
 

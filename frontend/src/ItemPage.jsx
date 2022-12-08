@@ -10,9 +10,9 @@ const ItemPage = (props) => {
                 <div style={{ margin: "-2ch" }}>
                     <img src={milkPicture} style={{ objectFit: "cover", height: "40vh", width: "100%" }} />
                 </div>
-                <h1>{props.itemDetails.name}</h1>
+                <h1 style={{textTransform: "capitalize"}}>{props.itemDetails.name}</h1>
                 <span className="itemPageInfoStyle"><b>Price:</b> ${props.itemDetails.price}</span>
-                <span className="itemPageInfoStyle"><b>Type:</b> {props.itemDetails.type}</span>
+                <span className="itemPageInfoStyle"><b>Type:</b> {props.itemDetails.category}</span>
                 <span className="itemPageInfoStyle"><b>Location:</b> {props.itemDetails.location}</span>
                 <span className="itemPageInfoStyle"><b>Amount in Stock:</b> {props.itemDetails.amount}</span>
 

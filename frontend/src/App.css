@@ -30,6 +30,9 @@ body {
   border: 1px solid #cccccc !important;
   border-radius: 7px !important;
 }
+.listing-styles {
+  height: 100%;
+}
 .listing-info-style {
   padding: 1ch;
 }
@@ -55,6 +58,7 @@ body {
 .itemPageInfoStyle {
   display: block;
   margin-top: 1ch;
+  text-transform: capitalize;
 }
 .listing-category-style {
   font-weight: 600;
