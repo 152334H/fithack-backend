@@ -9,25 +9,28 @@ const openai = new OpenAIApi(configuration);
 
 const PROMPT = `Decide whether a query is searching for an item location (\`Location\`), or looking for general help (\`Help\`)
 
-Query: what do i need for pizza?
+Query: how do i register for membership
 Type: Help
 
 Query: Where can i find flour?
 Type: Location (flour)
 
+Query: I need a fish
+Type: Location (fish)
+
 Query: potato
 Type: Location (potato)
 
-Query: I need help
+Query: 23j920fiaa
 Type: Help
 
-Query: I need a fish
-Type: Location (fish)
+Query: Must I pay for platic bags?
+Type: Help
 
 Query: chocolate milk
 Type: Location (chocolate milk)
 
-Query: 23j920fiaa
+Query: What time does Fairprice open
 Type: Help
 
 Query: `
@@ -39,6 +42,7 @@ async function predict(prompt) {
         model: 'text-curie-001',
         prompt: PROMPT+prompt+'\nType: ',
         max_tokens: 10,
+        logit_bias: {"628": -100, "128": -100}
     })
     const text = res.data.choices[0].text.trim()
 
