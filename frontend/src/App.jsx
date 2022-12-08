@@ -85,11 +85,11 @@ const App = () => {
     }
     else {
       setIsProductSearch(true)
-      if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g.test(e.target.value)) {
+      if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g.test(value)) {
         setisQnA(false)
         const newItemList = []
         for (let i = 0; i < fullOriginalItemList.length; i++) {
-          if (fullOriginalItemList[i].indexOf(value) !== -1) {
+          if (fullOriginalItemList[i].name.indexOf(value) !== -1) {
             newItemList.push(fullOriginalItemList[i])
           }
         }
@@ -198,9 +198,9 @@ const App = () => {
             <Fade in={true} style={{ transitionDelay: '240ms' }} >
               <div style={{ display: "flex", justifyContent: "center", marginTop: "2vh", flexDirection: "column" }}>
                 {searchLoading ? (
-                  <Fragment>
+                  <Grid rowSpacing={3} container spacing={2} alignItems="stretch">
                     {listLoadingSkeleton}
-                  </Fragment>
+                  </Grid>
                 ) : (
                   <Fragment>
                     {isProductSearch && (
