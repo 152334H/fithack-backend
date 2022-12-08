@@ -1,6 +1,6 @@
 import express from 'express'
-import predict from './gpt.js'
 import catalogRouter from './catalog.js'
+import queryRouter from './query.js'
 import cors from 'cors'
 
 const app = express()
@@ -16,32 +16,8 @@ app.use((req, _, nxt) => {
 	nxt()
 })
 
-
-app.post('/_test', async (req, res) => {
-    const query = req.body.query
-    if (typeof query !== 'string')
-        return res.status(400).send({
-            error: 'query not provided'
-        })
-   
-    const ls = await predict(query)
-    if (ls[0] === 0) {
-        res.status(200).send({
-            variant: 'help'
-        })
-    } else if (ls[0] === 1) {
-        res.status(200).send({
-            variant: 'item',
-            item: ls[1]
-        })
-    } else {
-        res.status(400).send({
-            error: `Received garbage: ${ls[1]}`
-        })
-    }
-})
-
 app.use('/listing', catalogRouter)
+app.use('/gpt', queryRouter)
 
 app.get('/', (_, res) => {
   res.send('Hello World')
