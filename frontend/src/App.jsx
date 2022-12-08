@@ -26,6 +26,11 @@ for (let i = 0; i < 6; i++) {
 const App = () => {
   const theme = useTheme()
   const [page, setPage] = useState("home")
+  const [center, setCenter] = useState({ //center of map
+    lat: 100,
+    lng: 200
+  })
+  const [zoom, setZoom] = useState(10)
   const [user, setUser] = useState("Kai Xiang")
   const [userLetters, setUserLetters] = useState("")
   const [searchFocused, setSearchFocused] = useState(false)
@@ -68,8 +73,26 @@ const App = () => {
       setUserLetters(userWords[0][0] + userWords[1][0])
     }
     else setUserLetters(userWords[0][0])
-
+    getItems()
   }, [])
+
+  const getItems = () => {
+    fetch(ipAdress + '/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        "CarParkID": carparkID
+      })
+    }).then((results) => {
+      return results.json(); //return data in JSON (since its JSON data)
+    }).then((data) => {
+
+    
+    }).catch((error) => {
+      console.log(error)
+      message.error("Oops, error refreshing carpark availability")
+    })
+  }
 
   const callAPIUpdate = (value) => {
     console.log(value)
@@ -185,10 +208,10 @@ const App = () => {
           <Categories viewItem={viewItem} />
         )}
         {page === "itemPage" && (
-          <ItemPage itemDetails={itemDetails} />
+          <ItemPage setPage={setPage} itemDetails={itemDetails} />
         )}
         {page === "map" && (
-          <Map />
+          <Map center={center} zoom={zoom} setCenter={setCenter} setZoom={setZoom}/>
         )}
       </div>
 
