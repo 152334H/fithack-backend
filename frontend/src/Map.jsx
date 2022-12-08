@@ -121,7 +121,10 @@ const Map = (props) => {
         {items.map((item) => {
           return (
             <Paper key={item.name} className="mapListStyle">
-              <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+              <img onError={(e) => {
+                e.target.onError = null;
+                e.target.src = milkPicture
+              }} src={"https://raw.githubusercontent.com/yZipperer/item-api/main/images/" + item.image} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
               <div className='listing-info-style'>
                 <span className='listing-title-style'>{item.name}</span>
                 <span className='listing-price-style'>${item.price}</span>

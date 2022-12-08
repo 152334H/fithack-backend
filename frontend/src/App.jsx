@@ -79,7 +79,7 @@ const App = () => {
   }
 
   const callAPIUpdate = async (value) => {
-    
+
     if (value === "") {
       setIsProductSearch(false)
     }
@@ -188,80 +188,83 @@ const App = () => {
                     {listLoadingSkeleton}
                   </Fragment>
                 ) : (
-                <Fragment>
-                  {isProductSearch && (
-                    <Button style={{ alignSelf: "center", marginBottom: "2vh" }} variant="contained" onClick={() => {
-                      setSearchVal("")
-                      setIsProductSearch(false)
-                      setSearchErrored(false)
-                      setItems(fullOriginalItemList)
-                      setisQnA(false)
-                    }}>Clear Search</Button>
-                  )}
+                  <Fragment>
+                    {isProductSearch && (
+                      <Button style={{ alignSelf: "center", marginBottom: "2vh" }} variant="contained" onClick={() => {
+                        setSearchVal("")
+                        setIsProductSearch(false)
+                        setSearchErrored(false)
+                        setItems(fullOriginalItemList)
+                        setisQnA(false)
+                      }}>Clear Search</Button>
+                    )}
 
-                  {!searchErrored && !isQnA && (
-                    <Fragment>
-                      {isProductSearch ? (
-                        <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Are you looking for these products?</h3>
-                      ) : (
-                        <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Recommended Products For You</h3>
-                      )}
-                    </Fragment>
-                  )}
-
-                  <Grid rowSpacing={3} container spacing={2} alignItems="stretch">
-                    {searchErrored ? (
-                      <Grid item columns={12} style={{ width: "100%" }}>
-                        <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
-                          <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                          <h3>I did not understand that query</h3>
-                          <span>Perhaps try typing a different search query?</span>
-                        </Paper>
-                      </Grid>
-                    ) : (
+                    {!searchErrored && !isQnA && (
                       <Fragment>
-                        {isQnA ? (
-                          <Grid item columns={12} style={{ width: "100%" }}>
-                            <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
-                              <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                              <h3>You asked: </h3>
-                              <span>response</span>
-                            </Paper>
-                          </Grid>) : (
-                          <Fragment>
-                            {items.length === 0 ? (
-                              <Grid item columns={12} style={{ width: "100%" }}>
-                                <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
-                                  <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                                  <h3>No Products Were Found</h3>
-                                  <span>Perhaps try typing a different search query?</span>
-                                </Paper>
-                              </Grid>
-                            ) : (
-                              <Fragment>
-                                {items.map((item, index) => (
-                                  <Grid item xs={6} sm={6} md={4} lg={3} key={item.name}>
-                                    <Paper className='listing-styles' elevation={6} onClick={() => {
-                                      viewItem(items[index])
-                                    }}>
-                                      <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
-                                      <div className='listing-info-style'>
-                                        <span className='listing-title-style'>{item.name}</span>
-                                        <span className='listing-price-style'>${item.price}</span>
-
-                                      </div>
-                                    </Paper>
-                                  </Grid>
-                                ))}
-                              </Fragment>
-                            )}
-                          </Fragment>
+                        {isProductSearch ? (
+                          <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Are you looking for these products?</h3>
+                        ) : (
+                          <h3 style={{ marginBottom: "1vh", marginTop: 0 }}>Recommended Products For You</h3>
                         )}
                       </Fragment>
                     )}
 
-                  </Grid>
-                </Fragment>
+                    <Grid rowSpacing={3} container spacing={2} alignItems="stretch">
+                      {searchErrored ? (
+                        <Grid item columns={12} style={{ width: "100%" }}>
+                          <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                            <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                            <h3>I did not understand that query</h3>
+                            <span>Perhaps try typing a different search query?</span>
+                          </Paper>
+                        </Grid>
+                      ) : (
+                        <Fragment>
+                          {isQnA ? (
+                            <Grid item columns={12} style={{ width: "100%" }}>
+                              <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                                <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                                <h3>You asked: </h3>
+                                <span>response</span>
+                              </Paper>
+                            </Grid>) : (
+                            <Fragment>
+                              {items.length === 0 ? (
+                                <Grid item columns={12} style={{ width: "100%" }}>
+                                  <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                                    <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                                    <h3>No Products Were Found</h3>
+                                    <span>Perhaps try typing a different search query?</span>
+                                  </Paper>
+                                </Grid>
+                              ) : (
+                                <Fragment>
+                                  {items.map((item, index) => (
+                                    <Grid item xs={6} sm={6} md={4} lg={3} key={item.name}>
+                                      <Paper className='listing-styles' elevation={6} onClick={() => {
+                                        viewItem(items[index])
+                                      }}>
+                                        <img onError={(e) => {
+                                          e.target.onError = null;
+                                          e.target.src = milkPicture
+                                        }} src={"https://raw.githubusercontent.com/yZipperer/item-api/main/images/" + item.image} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+                                        <div className='listing-info-style'>
+                                          <span className='listing-title-style'>{item.name}</span>
+                                          <span className='listing-price-style'>${item.price}</span>
+
+                                        </div>
+                                      </Paper>
+                                    </Grid>
+                                  ))}
+                                </Fragment>
+                              )}
+                            </Fragment>
+                          )}
+                        </Fragment>
+                      )}
+
+                    </Grid>
+                  </Fragment>
                 )}
               </div>
             </Fade>

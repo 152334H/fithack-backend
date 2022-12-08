@@ -61,7 +61,7 @@ const Categories = (props) => {
                 newGrid.push(
                     <Grid item xs={6} sm={6} md={4} lg={3} key={"category-" + category}>
                         <Paper className='listing-styles' elevation={6} onClick={() => { setCategoryPage(category) }}>
-                            <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+                            <img src={"https://raw.githubusercontent.com/yZipperer/item-api/main/images/" + data[category][0].image} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
                             <div className='listing-info-category-style'>
                                 <span className='listing-category-style'>{category}</span>
                             </div>
@@ -108,7 +108,10 @@ const Categories = (props) => {
                                                 <Paper className='listing-styles' elevation={6} onClick={() => {
                                                     props.viewItem(item)
                                                 }}>
-                                                    <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+                                                    <img onError={(e) => {
+                                                        e.target.onError = null;
+                                                        e.target.src = milkPicture
+                                                    }} src={"https://raw.githubusercontent.com/yZipperer/item-api/main/images/" + item.image} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
                                                     <div className='listing-info-style'>
                                                         <span className='listing-title-style'>{item.name}</span>
                                                         <span className='listing-price-style'>${item.price}</span>
