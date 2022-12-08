@@ -2,7 +2,7 @@ import {readFileSync} from 'fs'
 import express from 'express'
 import {compareTwoStrings} from 'string-similarity'
 
-const ITEMS = JSON.parse(readFileSync('./data.parsed.json')).map(d => ({...d, location_name:'tkai'}))
+const ITEMS = JSON.parse(readFileSync('./data.parsed.json'))
 
 /*
   {
