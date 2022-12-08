@@ -1,47 +1,56 @@
+import {readFileSync} from 'fs'
+import express from 'express'
+import {compareTwoStrings} from 'string-similarity'
 
-items = [
-    "ABC Milk",
-    "Appy-tood Creamer",
-    "Doug's Yougurt",
-    "Haybale's Tomato Sauce",
-    "AEKI Lubricants",
-    "'Smart-Eyes' Chocolate Milk",
-    "J&B Coconut Oil",
-    "Mac & Cheese Powder",
-    "'Tastes So Good' Chocolate Bar",
-    "Hainan Fuiji Apples",
-    "Texas Potatoes",
-    "'No-Obligation' Chocolate Chip Cookies",
-    "Namaste Juice",
-    "'Serendipity' Protein Bars",
-    "Aroma Power Cream",
-    "Boneless Beef",
-    "Flash-Free Batter",
-    "Fructo-Alcohol",
-    "Lenny's Noodles",
-    "'Squeeze-It' Condoms",
-    "Borneo Apples",
-    "Nipsy-Lips Lipstick",
-    "Chomp Chips",
-    "Groovy Strawberry Jam",
-    "Eternity Bean Paste",
-    "'Sticky Sticky' Cookies",
-    "Chippies",
-    "Polar Soda",
-    "'The Real Thing' Ice Cream",
-    "Russian Vermicelli",
-    "Sam's Chicken Wings",
-    "MIDAN Brand table salt",
-    "Real Butter",
-    "Freshly-Ground Coffee",
-    "New England Clam Chowder",
-    "Sweet-And-Spicy Pretzels",
-    "Shake Shack Grilled Chicken Sandwich",
-    "Cherry Lubricant",
-    "Mama's Chocolate Ice Cream",
-    "Fam&Harry's Ice Cream",
-    "Shake Shack Buttermilk Pancakes",
-    "Thai Honey Mangoes",
-    "South African Bananas",
-    "Ander Peaches",
-]
+const ITEMS = JSON.parse(readFileSync('./data.parsed.json'))
+/*
+  {
+    "name": "apple",
+    "id": "ffa137",
+    "category": "produce",
+    "price": 0.72,
+    "image": "ffa137.jpeg"
+  }
+*/
+
+const CATEGORIES = {}
+ITEMS.forEach(d => {
+    const ls = CATEGORIES[d.category] ?? [];
+    ls.push(d)
+    CATEGORIES[d.category] = ls
+})
+
+const catalogRouter = express.Router();
+
+catalogRouter.get('/unsorted', (_,res) => {
+    res.status(200).send(ITEMS)
+})
+catalogRouter.get('/categorised', (_,res) => {
+    res.status(200).send(CATEGORIES)
+})
+catalogRouter.post('/most_common', (req,res) => {
+    const query = req.body.query;
+    const limit = req.body.limit ?? 10;
+    if (typeof query !== 'string') 
+        return res.status(400).send({
+            error: 'query was missing'
+        })
+    if (typeof limit !== 'number')
+        return res.status(400).send({
+            error: 'limit was not a number'
+        })
+    
+    const ls = ITEMS.map(d => {
+        const dist = compareTwoStrings(d.name, query)
+        return [dist, d.id]
+    }).sort((a,b) => b[0]-a[0])
+
+    return res.status(200).send({
+        items: ls.slice(0,limit).map(ls => ({
+            similarity: ls[0],
+            id: ls[1]
+        }))
+    })
+})
+
+export default catalogRouter
