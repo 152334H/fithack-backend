@@ -47,10 +47,10 @@ input data:
 output:
 ```typescript:
 {
-  items: {
+  items: [{
     similarity: number, // 0.13
     id: string, // "fdf160"
-  }
+  }]
 }
 ```
 
