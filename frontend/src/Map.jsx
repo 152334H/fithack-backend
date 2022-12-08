@@ -9,6 +9,8 @@ import FloorPlan from './assets/FloorPlan.png'
 import { Fragment, useEffect, useState } from 'react'
 import { useTheme } from '@mui/material/styles';
 import milkPicture from './assets/milk.webp'
+import { useSnackbar } from 'notistack'
+
 delete LIcon.Default.prototype._getIconUrl;
 
 LIcon.Default.mergeOptions({
@@ -40,10 +42,30 @@ const ChangeMapZoomFocus = (props) => {
 
 let fullCategoryData = {}
 const Map = (props) => {
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const [center, setCenter] = useState({ //center of map
+    lat: 100,
+    lng: 200
+  })
+  const [zoom, setZoom] = useState(10)
   const theme = useTheme()
   const [markersList, setItemMarkers] = useState([])
   const [currentShelf, setCurrentShelf] = useState("")
   const [items, setItems] = useState([])
+
+  const handeClick = (category) => {
+    setItems(fullCategoryData[category])
+
+    if ("location_name" in fullCategoryData[category][0]) {
+      setCurrentShelf(fullCategoryData[category][0].location_name)
+      setZoom(3)
+      setCenter(fullCategoryData[category][0].location)
+    }
+    else {
+      enqueueSnackbar("Item does not have a location", { variant: "error" })
+    }
+
+  }
 
   const getListings = async () => {
     await fetch(window.address + "/listing/categorised", {
@@ -59,8 +81,7 @@ const Map = (props) => {
           markers.push(
             <Marker eventHandlers={{
               click: () => {
-                setItems(fullCategoryData[category])
-                setCurrentShelf(category)
+                handeClick(category, data[category][0].location_name)
               }
             }} key={data[category][0].location_name} position={data[category][0].location}>
               <Popup closeOnClick={false} closeButton={false} closeOnEscapeKey={false} maxWidth={250} minWidth={10} maxHeight={55}>
@@ -73,7 +94,9 @@ const Map = (props) => {
       }
 
       setItemMarkers(markers)
-      console.log(data)
+      if (props.findCategory) {
+        handeClick(props.findCategory)
+      }
     }).catch((error) => {
       console.log(error)
     })
@@ -88,19 +111,16 @@ const Map = (props) => {
         <MapContainer maxZoom={2} bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
           <ZoomControl position="bottomright"></ZoomControl>
           <AddImageOverlay />
-          <ChangeMapZoomFocus center={props.center} zoom={props.zoom} />
+          <ChangeMapZoomFocus center={center} zoom={zoom} />
           {markersList}
         </MapContainer>
       </div>
-      <h1 style={{ marginTop: "2ch" }}><span style={{ color: theme.palette.primary.main }}>Bukit Panjang</span> Outlet</h1>
+      <h2 style={{ marginTop: "2ch" }}><span style={{ color: theme.palette.primary.main }}>Bukit Panjang</span> Outlet</h2>
       <h3>Items at: {currentShelf ? currentShelf : "No Shelf Selected"}</h3>
       <div>
         {items.map((item) => {
           return (
-            <Paper onClick={() => {
-              props.setCenter(items[i].location)
-              props.setZoom(1)
-            }} key={item.name} className="mapListStyle">
+            <Paper key={item.name} className="mapListStyle">
               <img src={milkPicture} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
               <div className='listing-info-style'>
                 <span className='listing-title-style'>{item.name}</span>

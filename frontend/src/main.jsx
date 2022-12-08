@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import "@fontsource/inter"; 
+import { SnackbarProvider } from 'notistack';
+import "@fontsource/inter";
 
 const darkTheme = createTheme({
   palette: {
@@ -16,9 +17,11 @@ const darkTheme = createTheme({
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <SnackbarProvider maxSnack={3} autoHideDuration={4000} anchorOrigin={{ horizontal: "center", vertical: "bottom" }}>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
+    </SnackbarProvider>
   </React.StrictMode>
 )

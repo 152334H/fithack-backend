@@ -36,11 +36,7 @@ const App = () => {
   const theme = useTheme()
   const [searchVal, setSearchVal] = useState("")
   const [page, setPage] = useState("home")
-  const [center, setCenter] = useState({ //center of map
-    lat: 100,
-    lng: 200
-  })
-  const [zoom, setZoom] = useState(10)
+
   const [user, setUser] = useState("Kai Xiang")
   const [isQnA, setisQnA] = useState(false)
   const [userLetters, setUserLetters] = useState("")
@@ -48,6 +44,7 @@ const App = () => {
   const [searchLoading, setSearchLoading] = useState(true)
   const [searchErrored, setSearchErrored] = useState(false)
   const [items, setItems] = useState([])
+  const [findCategory, setFindCategory] = useState(false)
   const [itemDetails, setItemDetails] = useState({
     name: "HL MILK",
     price: 1.50,
@@ -274,10 +271,10 @@ const App = () => {
           <Categories viewItem={viewItem} />
         )}
         {page === "itemPage" && (
-          <ItemPage setPage={setPage} itemDetails={itemDetails} />
+          <ItemPage setPage={setPage} setFindCategory={setFindCategory} itemDetails={itemDetails} />
         )}
         {page === "map" && (
-          <Map center={center} zoom={zoom} setCenter={setCenter} setZoom={setZoom} />
+          <Map findCategory={findCategory} />
         )}
       </div>
 

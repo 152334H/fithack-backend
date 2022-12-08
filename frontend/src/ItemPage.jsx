@@ -14,9 +14,11 @@ const ItemPage = (props) => {
                 <span className="itemPageInfoStyle"><b>Price:</b> ${props.itemDetails.price}</span>
                 <span className="itemPageInfoStyle"><b>Type:</b> {props.itemDetails.category}</span>
                 <span className="itemPageInfoStyle"><b>Location:</b> {props.itemDetails.location}</span>
-                <span className="itemPageInfoStyle"><b>Amount in Stock:</b> {props.itemDetails.amount}</span>
 
-                <Button onClick={() => {}} startIcon={<SearchIcon />} style={{ marginTop: "3vh" }} variant="contained">Find Item in Store</Button>
+                <Button onClick={() => {
+                    props.setFindCategory(props.itemDetails.category)
+                    props.setPage("map")
+                }} startIcon={<SearchIcon />} style={{ marginTop: "3vh" }} variant="contained">Find Item in Store</Button>
             </div>
         </Fade>
     )
