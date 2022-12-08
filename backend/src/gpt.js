@@ -52,6 +52,8 @@ async function predict(prompt) {
         const end_ind = text.indexOf(')')
         return [1, text.slice(10, end_ind)]
     } else {
+        if (prompt.toLowerCase().includes('help'))
+            return [0,text]
         return [-1, text]
     }
 }
