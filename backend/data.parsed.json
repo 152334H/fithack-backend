@@ -732,5 +732,12 @@
     "category": "snacks",
     "price": 3.18,
     "image": "fcc232.jpeg"
+  },
+  {
+    "name": "好吃饼干",
+    "id": "fcc233",
+    "category": "snacks",
+    "price": 2.50,
+    "image": "fcc232.jpeg"
   }
 ]

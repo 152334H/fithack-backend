@@ -84,43 +84,56 @@ const App = () => {
       setIsProductSearch(false)
     }
     else {
-
       setIsProductSearch(true)
-      // call search API here
-
-      await fetch(window.address + "/gpt/classify", {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: value
-        })
-      }).then((results) => {
-        return results.json(); //return data in JSON (since its JSON data)
-      }).then((data) => {
-        if ("error" in data) {
-          setSearchErrored(true)
+      if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g.test(e.target.value)) {
+        setisQnA(false)
+        const newItemList = []
+        for (let i = 0; i < fullOriginalItemList.length; i++) {
+          if (fullOriginalItemList[i].indexOf(value) !== -1) {
+            newItemList.push(fullOriginalItemList[i])
+          }
         }
-        else {
-          if (data.variant === "item") {
-            setisQnA(false)
-            const newItemList = []
-            for (let i = 0; i < data.relatedItems.length; i++) {
-              newItemList.push(data.relatedItems[i].item)
+        setItems(newItemList)
+      }
+      else {
+        // call search API here
+
+        await fetch(window.address + "/gpt/classify", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: value
+          })
+        }).then((results) => {
+          return results.json(); //return data in JSON (since its JSON data)
+        }).then((data) => {
+          if ("error" in data) {
+            setSearchErrored(true)
+          }
+          else {
+            if (data.variant === "item") {
+              setisQnA(false)
+              const newItemList = []
+              for (let i = 0; i < data.relatedItems.length; i++) {
+                newItemList.push(data.relatedItems[i].item)
+              }
+              setItems(newItemList)
             }
-            setItems(newItemList)
+            else if (data.variant === "help") {
+              setisQnA(true)
+            }
           }
-          else if (data.variant === "help") {
-            setisQnA(true)
-          }
-        }
 
-      }).catch((error) => {
-        setSearchErrored(true)
-        console.log(error)
-      })
+        }).catch((error) => {
+          setSearchErrored(true)
+          console.log(error)
+        })
 
+      }
+      setSearchLoading(false)
     }
-    setSearchLoading(false)
+
+
 
   }
 
@@ -152,6 +165,7 @@ const App = () => {
                   onFocus={() => { setSearchFocused(true) }}
                   onBlur={() => { setSearchFocused(false) }}
                   onChange={(e) => {
+
                     debouncedUpdate(callAPIUpdate, e.target.value)
                     setSearchVal(e.target.value)
                     if (!searchLoading) setSearchLoading(true)

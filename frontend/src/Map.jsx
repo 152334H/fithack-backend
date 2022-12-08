@@ -108,7 +108,7 @@ const Map = (props) => {
   return (
     <Fragment>
       <div style={{ margin: "-2ch" }}>
-        <MapContainer maxZoom={2} bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
+        <MapContainer zoomControl={null} maxZoom={2} bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
           <ZoomControl position="bottomright"></ZoomControl>
           <AddImageOverlay />
           <ChangeMapZoomFocus center={center} zoom={zoom} />
