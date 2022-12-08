@@ -36,6 +36,7 @@ body {
 .listing-title-style {
   display: block;
   font-weight: 550;
+  text-transform: capitalize;
 }
 .mapListStyle {
   margin-bottom: 2vh;

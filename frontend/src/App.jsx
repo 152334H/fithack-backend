@@ -35,30 +35,8 @@ const App = () => {
   const [user, setUser] = useState("Kai Xiang")
   const [userLetters, setUserLetters] = useState("")
   const [searchFocused, setSearchFocused] = useState(false)
-  const [searchLoading, setSearchLoading] = useState(false)
-  const [items, setItems] = useState([
-    {
-      name: "HL MILK",
-      price: 1.50,
-      type: "Drink",
-      location: "Shelf E5",
-      amount: 5
-    },
-    {
-      name: "HL MILK 200ML",
-      price: 1.50,
-      type: "Drink",
-      location: "Shelf E5",
-      amount: 5
-    },
-    {
-      name: "HL MILK 300ML",
-      price: 1.50,
-      type: "Drink",
-      location: "Shelf E5",
-      amount: 5
-    }
-  ])
+  const [searchLoading, setSearchLoading] = useState(true)
+  const [items, setItems] = useState([])
   const [itemDetails, setItemDetails] = useState({
     name: "HL MILK",
     price: 1.50,
@@ -77,23 +55,23 @@ const App = () => {
     getItems()
   }, [])
 
-  const getItems = () => {
-    fetch(window.address + "/listing/unsorted", {
+  const getItems = async () => {
+    await fetch(window.address + "/listing/unsorted", {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     }).then((results) => {
       return results.json(); //return data in JSON (since its JSON data)
     }).then((data) => {
-      console.log(data)
+      setItems(data)
     }).catch((error) => {
       console.log(error)
     })
+    setSearchLoading(false)
   }
 
   const callAPIUpdate = (value) => {
     console.log(value)
     // call search API here
-    setTimeout(() => { setSearchLoading(false); }, 1000)
   }
 
   const viewItem = (itemInfo) => {
@@ -183,8 +161,7 @@ const App = () => {
                               <div className='listing-info-style'>
                                 <span className='listing-title-style'>{item.name}</span>
                                 <span className='listing-price-style'>${item.price}</span>
-                                <span className='listing-quantity-style'>Amount: <b>{item.amount}</b></span>
-
+                                
                               </div>
                             </Paper>
                           </Grid>
@@ -207,7 +184,7 @@ const App = () => {
           <ItemPage setPage={setPage} itemDetails={itemDetails} />
         )}
         {page === "map" && (
-          <Map center={center} zoom={zoom} setCenter={setCenter} setZoom={setZoom}/>
+          <Map center={center} zoom={zoom} setCenter={setCenter} setZoom={setZoom} />
         )}
       </div>
 
