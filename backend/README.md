@@ -24,12 +24,12 @@ api is temporarily available at `irscybersec.ml:5170`
 {
   <category>: [
     {
-			"name": string, //"Gold Medal All-Purpose Flour",
-			"id": string, // "fdf160",
-			"category": string, //"dry-goods",
-			"price": number, //4.66,
-			"image": string, //"fdf160.png"
-  	}
+      "name": string, //"Gold Medal All-Purpose Flour",
+      "id": string, // "fdf160",
+      "category": string, //"dry-goods",
+      "price": number, //4.66,
+      "image": string, //"fdf160.png"
+    }
   ]
 }
 ```
