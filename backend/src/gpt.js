@@ -66,6 +66,8 @@ async function predict(prompt) {
     } else {
         if (prompt.toLowerCase().includes('help'))
             return [0,text]
+        if (prompt.toLowerCase().includes('query'))
+            return [0,text]
         return [-1, text]
     }
 }

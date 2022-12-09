@@ -13,7 +13,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import Categories from './Categories';
 import ItemPage from './ItemPage';
 import Map from './Map';
-import { findBestMarch } from 'string-similarity'
+import StringSimiliarity from 'string-similarity'
 
 window.address = "http://irscybersec.ml:5170"
 
@@ -114,6 +114,7 @@ const App = () => {
           return results.json(); //return data in JSON (since its JSON data)
         }).then((data) => {
           if ("error" in data) {
+            console.log(data)
             setSearchErrored(true)
           }
           else {
@@ -127,7 +128,7 @@ const App = () => {
               setItems(newItemList)
             }
             else if (data.variant === "help") {
-              const matches = findBestMarch(value, questions)
+              const matches = StringSimiliarity.findBestMatch(value, questions)
               console.log(matches)
               setisQnA(true)
             }
