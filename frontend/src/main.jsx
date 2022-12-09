@@ -16,12 +16,10 @@ const darkTheme = createTheme({
 });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <SnackbarProvider maxSnack={3} autoHideDuration={4000} anchorOrigin={{ horizontal: "center", vertical: "bottom" }}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
         <App />
       </ThemeProvider>
     </SnackbarProvider>
-  </React.StrictMode>
 )

@@ -11,10 +11,11 @@ import debounce from 'lodash.debounce'
 import milkPicture from './assets/milk.webp'
 import fairpricelogo from './assets/fairpricelogo.png'
 import ViewListIcon from '@mui/icons-material/ViewList';
+import MicIcon from '@mui/icons-material/Mic';
 import Categories from './Categories';
 import ItemPage from './ItemPage';
 import Map from './Map';
-import StringSimiliarity from 'string-similarity'
+import StringSimiliarity from 'string-similarity';
 
 window.address = "http://irscybersec.ml:5170"
 
@@ -35,6 +36,9 @@ const debouncedUpdate = debounce((callAPIUpdate, value) => {
 let fullOriginalItemList = []
 const questions = ["What are the opening hours of the fairprice at Our Tampines Hub?", "What payment methods does Fairprice accept?", "Do I need to pay for plastic bags?", "How do I register for a Fairprice membership account?"]
 const answers = ["24 hours a day, everyday.", "Visa, NETs, Fairprice App", "Yes there is a charge of $0.20 per plastic bag. We recommend bringing your own reusable bag to help save the environment!", "You can create an account online at https://www.fairprice.com.sg/membership/registration"]
+
+let mediaRecorder = null
+let recordedChunks = []
 
 const App = () => {
   const theme = useTheme()
@@ -59,6 +63,7 @@ const App = () => {
   const [isProductSearch, setIsProductSearch] = useState(false)
   const [QnAPrompt, setQnAPrompt] = useState("")
   const [response, setResponse] = useState("")
+  const [isRecording, setIsRecording] = useState(false)
 
   useEffect(() => {
     const userWords = user.split(" ")
@@ -67,7 +72,55 @@ const App = () => {
     }
     else setUserLetters(userWords[0][0])
     getItems()
+
+    navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+      .then(handleMediaRecorder);
   }, [])
+
+  const handleMediaRecorder = async (stream) => {
+    const options = { mimeType: 'audio/webm', audioBitsPerSecond: 16000 };
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream, options);
+
+    mediaRecorder.addEventListener('dataavailable', function (e) {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    });
+
+    mediaRecorder.addEventListener('stop', async () => {
+      setSearchLoading(true)
+      
+
+      const saveRecordedChunks = new Blob(recordedChunks)
+      recordedChunks = []
+      const reader = new FileReader();
+      reader.readAsDataURL(saveRecordedChunks);
+      reader.onloadend = async () => {
+        const base64data = reader.result;
+
+        await fetch("https://nc.cutemares.xyz/whisper/stt", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({'audio': base64data.split(",")[1]})
+        }).then((results) => {
+          return results.json(); //return data in JSON (since its JSON data)
+        }).then((data) => {
+          let result = data.txt
+          if (data.txt.indexOf(".") !== -1) {
+            result = data.txt.split(".")[0].replace(" ", "")
+          }
+
+          setSearchVal(result)
+          setSearchErrored(false)
+          
+        }).catch((error) => {
+          console.log(error)
+        })
+        setSearchLoading(false)
+      }
+    });
+
+
+  }
 
   const getItems = async () => {
     await fetch(window.address + "/listing/unsorted", {
@@ -83,6 +136,8 @@ const App = () => {
     })
     setSearchLoading(false)
   }
+
+
 
   const callAPIUpdate = async (value) => {
 
@@ -132,7 +187,6 @@ const App = () => {
               const matches = StringSimiliarity.findBestMatch(value, questions)
               setQnAPrompt(matches.bestMatch.target)
               setResponse(answers[matches.bestMatchIndex])
-              console.log(matches)
               setisQnA(true)
             }
           }
@@ -196,9 +250,23 @@ const App = () => {
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
-                        {searchLoading && (
+                        {searchLoading ? (
                           <Fade in={true}>
                             <CircularProgress style={{ color: "#fadb14" }} />
+                          </Fade>
+                        ) : (
+                          <Fade in={true}>
+                            <MicIcon onClick={() => {
+                              if (!isRecording) {
+                                mediaRecorder.start();
+                                setIsRecording(true)
+                              }
+                              else {
+                                mediaRecorder.stop()
+                                setIsRecording(false)
+                              }
+
+                            }} style={{ color: isRecording ? "red" : "#fadb14" }} />
                           </Fade>
                         )}
                       </InputAdornment>

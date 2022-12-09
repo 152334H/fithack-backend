@@ -1,5 +1,6 @@
 import { Button, Fade } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search';
+import milkPicture from './assets/milk.webp'
 
 const ItemPage = (props) => {
 

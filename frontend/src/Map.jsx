@@ -44,14 +44,15 @@ let fullCategoryData = {}
 const Map = (props) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const [center, setCenter] = useState({ //center of map
-    lat: 100,
-    lng: 200
+    lat: 250,
+    lng: 300
   })
-  const [zoom, setZoom] = useState(10)
+  const [zoom, setZoom] = useState(0)
   const theme = useTheme()
   const [markersList, setItemMarkers] = useState([])
   const [currentShelf, setCurrentShelf] = useState("")
   const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(false)
 
   const handeClick = (category) => {
     setItems(fullCategoryData[category])
@@ -107,33 +108,39 @@ const Map = (props) => {
   }, [])
   return (
     <Fragment>
-      <div style={{ margin: "-2ch" }}>
-        <MapContainer zoomControl={null} maxZoom={2} bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
-          <ZoomControl position="bottomright"></ZoomControl>
-          <AddImageOverlay />
-          <ChangeMapZoomFocus center={center} zoom={zoom} />
-          {markersList}
-        </MapContainer>
-      </div>
-      <h2 style={{ marginTop: "2ch" }}><span style={{ color: theme.palette.primary.main }}>Bukit Panjang</span> Outlet</h2>
-      <h3>Items at: {currentShelf ? currentShelf : "No Shelf Selected"}</h3>
-      <div>
-        {items.map((item) => {
-          return (
-            <Paper key={item.name} className="mapListStyle">
-              <img onError={(e) => {
-                e.target.onError = null;
-                e.target.src = milkPicture
-              }} src={"https://raw.githubusercontent.com/yZipperer/item-api/main/images/" + item.image} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
-              <div className='listing-info-style'>
-                <span className='listing-title-style'>{item.name}</span>
-                <span className='listing-price-style'>${item.price}</span>
+      {loading ? (<div style={{ overflow: "hidden", height: "90vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <CircularProgress size="10ch" />
+      </div>) : (
+        <Fragment>
+          <div style={{ margin: "-2ch" }}>
+            <MapContainer zoomControl={null} maxZoom={2} bounds={bounds} style={{ height: "40vh", width: "100vw" }}>
+              <ZoomControl position="bottomright"></ZoomControl>
+              <AddImageOverlay />
+              <ChangeMapZoomFocus center={center} zoom={zoom} />
+              {markersList}
+            </MapContainer>
+          </div>
+          <h2 style={{ marginTop: "2ch" }}><span style={{ color: theme.palette.primary.main }}>Bukit Panjang</span> Outlet</h2>
+          <h3>Items at: {currentShelf ? currentShelf : "No Shelf Selected"}</h3>
+          <div>
+            {items.map((item) => {
+              return (
+                <Paper key={item.name} className="mapListStyle">
+                  <img onError={(e) => {
+                    e.target.onError = null;
+                    e.target.src = milkPicture
+                  }} src={"https://raw.githubusercontent.com/yZipperer/item-api/main/images/" + item.image} style={{ width: "100%", height: "15ch", objectFit: "cover" }} />
+                  <div className='listing-info-style'>
+                    <span className='listing-title-style'>{item.name}</span>
+                    <span className='listing-price-style'>${item.price}</span>
 
-              </div>
-            </Paper>
-          )
-        })}
-      </div>
+                  </div>
+                </Paper>
+              )
+            })}
+          </div>
+        </Fragment>
+      )}
     </Fragment>
 
   )
