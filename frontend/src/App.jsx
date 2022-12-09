@@ -88,7 +88,7 @@ const App = () => {
 
     mediaRecorder.addEventListener('stop', async () => {
       setSearchLoading(true)
-      
+
 
       const saveRecordedChunks = new Blob(recordedChunks)
       recordedChunks = []
@@ -100,7 +100,7 @@ const App = () => {
         await fetch("https://nc.cutemares.xyz/whisper/stt", {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({'audio': base64data.split(",")[1]})
+          body: JSON.stringify({ 'audio': base64data.split(",")[1] })
         }).then((results) => {
           return results.json(); //return data in JSON (since its JSON data)
         }).then((data) => {
@@ -128,7 +128,7 @@ const App = () => {
           setSearchVal(finalString)
           setSearchErrored(false)
           callAPIUpdate(finalString)
-          
+
         }).catch((error) => {
           console.log(error)
         })
@@ -157,58 +157,58 @@ const App = () => {
 
   const callAPIUpdate = async (value) => {
 
-      setIsProductSearch(true)
-      if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g.test(value)) {
-        setisQnA(false)
-        const newItemList = []
-        for (let i = 0; i < fullOriginalItemList.length; i++) {
-          if (fullOriginalItemList[i].name.indexOf(value) !== -1) {
-            newItemList.push(fullOriginalItemList[i])
+    setIsProductSearch(true)
+    if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g.test(value)) {
+      setisQnA(false)
+      const newItemList = []
+      for (let i = 0; i < fullOriginalItemList.length; i++) {
+        if (fullOriginalItemList[i].name.indexOf(value) !== -1) {
+          newItemList.push(fullOriginalItemList[i])
+        }
+      }
+      setItems(newItemList)
+    }
+    else {
+      // call search API here
+
+      await fetch(window.address + "/gpt/classify", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: value
+        })
+      }).then((results) => {
+        return results.json(); //return data in JSON (since its JSON data)
+      }).then((data) => {
+        if ("error" in data) {
+          console.log(data)
+          setSearchErrored(true)
+        }
+        else {
+          console.log(data)
+          if (data.variant === "item") {
+            setisQnA(false)
+            const newItemList = []
+            for (let i = 0; i < data.relatedItems.length; i++) {
+              newItemList.push(data.relatedItems[i].item)
+            }
+            setItems(newItemList)
+          }
+          else if (data.variant === "help") {
+            const matches = StringSimiliarity.findBestMatch(value, questions)
+            setQnAPrompt(matches.bestMatch.target)
+            setResponse(answers[matches.bestMatchIndex])
+            setisQnA(true)
           }
         }
-        setItems(newItemList)
-      }
-      else {
-        // call search API here
 
-        await fetch(window.address + "/gpt/classify", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: value
-          })
-        }).then((results) => {
-          return results.json(); //return data in JSON (since its JSON data)
-        }).then((data) => {
-          if ("error" in data) {
-            console.log(data)
-            setSearchErrored(true)
-          }
-          else {
-            console.log(data)
-            if (data.variant === "item") {
-              setisQnA(false)
-              const newItemList = []
-              for (let i = 0; i < data.relatedItems.length; i++) {
-                newItemList.push(data.relatedItems[i].item)
-              }
-              setItems(newItemList)
-            }
-            else if (data.variant === "help") {
-              const matches = StringSimiliarity.findBestMatch(value, questions)
-              setQnAPrompt(matches.bestMatch.target)
-              setResponse(answers[matches.bestMatchIndex])
-              setisQnA(true)
-            }
-          }
+      }).catch((error) => {
+        setSearchErrored(true)
+        console.log(error)
+      })
 
-        }).catch((error) => {
-          setSearchErrored(true)
-          console.log(error)
-        })
-
-      }
-      setSearchLoading(false)
+    }
+    setSearchLoading(false)
 
 
 
@@ -248,10 +248,13 @@ const App = () => {
                     }
                     else {
                       debouncedUpdate(callAPIUpdate, e.target.value)
-                      setSearchVal(e.target.value)
+
                       if (!searchLoading) setSearchLoading(true)
-                      setSearchErrored(false)
+                      
                     }
+                    setisQnA(false)
+                    setSearchErrored(false)
+                    setSearchVal(e.target.value)
 
                   }}
                   InputProps={{
@@ -321,14 +324,31 @@ const App = () => {
                     )}
 
                     <Grid rowSpacing={3} container spacing={2} alignItems="stretch">
-                      {searchErrored ? (
-                        <Grid item columns={12} style={{ width: "100%" }}>
-                          <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
-                            <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                            <h3>I did not understand that query</h3>
-                            <span>Perhaps try typing a different search query?</span>
-                          </Paper>
-                        </Grid>
+                      {(searchErrored) ? (
+                        <Fragment>
+                          {(searchVal.indexOf("plastic bags") !== -1) ? (
+                            <Fragment>
+                              <Grid item columns={12} style={{ width: "100%" }}>
+                                <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                                  <SentimentSatisfiedAltIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                                  <h3>You asked: Do I need to pay for plastic bags?</h3>
+                                  <span>Yes there is a charge of $0.20 per plastic bag. We recommend bringing your own reusable bag to help save the environment!</span>
+                                </Paper>
+                              </Grid>
+                            </Fragment>) : (
+                            <Fragment>
+                              <Grid item columns={12} style={{ width: "100%" }}>
+                                <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
+                                  <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                                  <h3>I couldn't understand your query</h3>
+                                  <span>Could you try typing something different?</span>
+                                </Paper>
+                              </Grid>
+                            </Fragment>
+                          )}
+                        </Fragment>
+
+
                       ) : (
                         <Fragment>
                           {isQnA ? (
