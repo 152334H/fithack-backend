@@ -104,18 +104,34 @@ const App = () => {
         }).then((results) => {
           return results.json(); //return data in JSON (since its JSON data)
         }).then((data) => {
-          let result = data.txt
-          if (data.txt.indexOf(".") !== -1) {
-            result = data.txt.split(".")[0].replace(" ", "")
+          const checkDuplicates = {}
+          let finalString = ""
+          const splitStuff = data.txt.split(" ")
+          if (splitStuff.length > 1) {
+            for (let i = 0; i < splitStuff.length; i++) {
+              if (splitStuff[i] in checkDuplicates) break
+              else {
+                finalString += splitStuff[i] + " "
+                checkDuplicates[splitStuff[i]] = 0
+              }
+            }
+          }
+          else {
+            finalString = data.txt
           }
 
-          setSearchVal(result)
+
+
+
+          console.log(finalString)
+
+          setSearchVal(finalString)
           setSearchErrored(false)
+          callAPIUpdate(finalString)
           
         }).catch((error) => {
           console.log(error)
         })
-        setSearchLoading(false)
       }
     });
 
@@ -141,11 +157,6 @@ const App = () => {
 
   const callAPIUpdate = async (value) => {
 
-    if (value === "") {
-      setIsProductSearch(false)
-      setSearchLoading(false)
-    }
-    else {
       setIsProductSearch(true)
       if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f]/g.test(value)) {
         setisQnA(false)
@@ -198,7 +209,6 @@ const App = () => {
 
       }
       setSearchLoading(false)
-    }
 
 
 
@@ -232,11 +242,17 @@ const App = () => {
                   onFocus={() => { setSearchFocused(true) }}
                   onBlur={() => { setSearchFocused(false) }}
                   onChange={(e) => {
+                    if (e.target.value === "") {
+                      setIsProductSearch(false)
+                      setSearchLoading(false)
+                    }
+                    else {
+                      debouncedUpdate(callAPIUpdate, e.target.value)
+                      setSearchVal(e.target.value)
+                      if (!searchLoading) setSearchLoading(true)
+                      setSearchErrored(false)
+                    }
 
-                    debouncedUpdate(callAPIUpdate, e.target.value)
-                    setSearchVal(e.target.value)
-                    if (!searchLoading) setSearchLoading(true)
-                    setSearchErrored(false)
                   }}
                   InputProps={{
                     startAdornment: (
