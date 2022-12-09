@@ -3,6 +3,7 @@ import { CircularProgress, Button, Paper, BottomNavigation, BottomNavigationActi
 import HomeIcon from '@mui/icons-material/Home'
 import MapIcon from '@mui/icons-material/Map';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import './App.css'
 import { useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
@@ -129,6 +130,8 @@ const App = () => {
             }
             else if (data.variant === "help") {
               const matches = StringSimiliarity.findBestMatch(value, questions)
+              setQnAPrompt(matches.bestMatch.target)
+              setResponse(answers[matches.bestMatchIndex])
               console.log(matches)
               setisQnA(true)
             }
@@ -216,10 +219,10 @@ const App = () => {
                     {isProductSearch && (
                       <Button style={{ alignSelf: "center", marginBottom: "2vh" }} variant="contained" onClick={() => {
                         setSearchVal("")
-                        setIsProductSearch(false)
                         setSearchErrored(false)
                         setItems(fullOriginalItemList)
                         setisQnA(false)
+                        setIsProductSearch(false)
                       }}>Clear Search</Button>
                     )}
 
@@ -247,9 +250,9 @@ const App = () => {
                           {isQnA ? (
                             <Grid item columns={12} style={{ width: "100%" }}>
                               <Paper style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2ch", textAlign: "center" }} elevation={12}>
-                                <SentimentDissatisfiedIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
-                                <h3>You asked: </h3>
-                                <span>response</span>
+                                <SentimentSatisfiedAltIcon style={{ fontSize: "5ch", color: "#2196f3" }} />
+                                <h3>You asked: {QnAPrompt}</h3>
+                                <span>{response}</span>
                               </Paper>
                             </Grid>) : (
                             <Fragment>
