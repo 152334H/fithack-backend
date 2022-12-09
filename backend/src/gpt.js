@@ -9,7 +9,10 @@ const openai = new OpenAIApi(configuration);
 
 const PROMPT = `Decide whether a query is searching for an item location (\`Location\`), or looking for general help (\`Help\`)
 
-Query: how do i register for membership
+Query: how do I register for membership?
+Type: Help
+
+Query: How do I obtain a Fairprice membership?
 Type: Help
 
 Query: Where can i find flour?
@@ -27,11 +30,20 @@ Type: Help
 Query: Must I pay for platic bags?
 Type: Help
 
+Query: Do I need to pay for plastic bages?
+Type: Help
+
+What payment methods are accepted?
+Type: Help
+
 Query: chocolate milk
 Type: Location (chocolate milk)
 
-Query: What time does Fairprice open
+Query: What time does Fairprice open?
 Type: Help
+
+Query: What are the opening hours of Fairprice?
+Type: Help  
 
 Query: `
 /*

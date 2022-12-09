@@ -13,6 +13,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import Categories from './Categories';
 import ItemPage from './ItemPage';
 import Map from './Map';
+import { findBestMarch } from 'string-similarity'
 
 window.address = "http://irscybersec.ml:5170"
 
@@ -31,6 +32,8 @@ const debouncedUpdate = debounce((callAPIUpdate, value) => {
 }, 500)
 
 let fullOriginalItemList = []
+const questions = ["What are the opening hours of the fairprice at Our Tampines Hub?", "What payment methods does Fairprice accept?", "Do I need to pay for plastic bags?", "How do I register for a Fairprice membership account?"]
+const answers = ["24 hours a day, everyday.", "Visa, NETs, Fairprice App", "Yes there is a charge of $0.20 per plastic bag. We recommend bringing your own reusable bag to help save the environment!", "You can create an account online at https://www.fairprice.com.sg/membership/registration"]
 
 const App = () => {
   const theme = useTheme()
@@ -53,6 +56,8 @@ const App = () => {
     amount: 5
   })
   const [isProductSearch, setIsProductSearch] = useState(false)
+  const [QnAPrompt, setQnAPrompt] = useState("")
+  const [response, setResponse] = useState("")
 
   useEffect(() => {
     const userWords = user.split(" ")
@@ -82,6 +87,7 @@ const App = () => {
 
     if (value === "") {
       setIsProductSearch(false)
+      setSearchLoading(false)
     }
     else {
       setIsProductSearch(true)
@@ -111,6 +117,7 @@ const App = () => {
             setSearchErrored(true)
           }
           else {
+            console.log(data)
             if (data.variant === "item") {
               setisQnA(false)
               const newItemList = []
@@ -120,6 +127,8 @@ const App = () => {
               setItems(newItemList)
             }
             else if (data.variant === "help") {
+              const matches = findBestMarch(value, questions)
+              console.log(matches)
               setisQnA(true)
             }
           }
