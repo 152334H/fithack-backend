@@ -1,5 +1,6 @@
 import express from 'express'
 import predict from './gpt.js'
+import searchHelp from './qna.js'
 import {mostCommon} from './catalog.js'
 
 const queryRouter = express.Router()
@@ -19,7 +20,8 @@ queryRouter.post('/classify', async (req, res) => {
     const ls = await predict(query)
     if (ls[0] === 0) {
         res.status(200).send({
-            variant: 'help'
+            variant: 'help',
+            qna: searchHelp(ls[1])
         })
     } else if (ls[0] === 1) {
         res.status(200).send({

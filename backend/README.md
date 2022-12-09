@@ -49,6 +49,11 @@ output:
 {
   error: string | undefined, // status 400 if defined
   variant: 'help' | 'item' | undefined,
+  // this field only appears for variant==='help'
+  qna: {
+    question: str,
+    answer: str
+  },
   // following fields imply variant==='item'
   focus: string, // a substring of input.query
   relatedItems: [{
