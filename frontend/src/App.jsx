@@ -17,7 +17,7 @@ import ItemPage from './ItemPage';
 import Map from './Map';
 import StringSimiliarity from 'string-similarity';
 
-window.address = "http://irscybersec.ml:5170"
+window.address = "https://fithack.irscybersec.ml/api"
 
 const listLoadingSkeleton = []
 for (let i = 0; i < 6; i++) {
